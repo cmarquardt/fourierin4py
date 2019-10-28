@@ -1,0 +1,18 @@
+# Python build system
+
+build*
+*.egg
+*egg-info*
+*.pyc
+*.so
+.pytest_cache
+__pycache__
+
+# IntelliJ / pyCharm specific files
+
+.idea
+
+# Version mechanism
+
+RELEASE-VERSION
+
