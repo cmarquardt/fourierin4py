@@ -79,14 +79,14 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
         ft   = f(t)
         midpoint = True
     else:
-        m  = len(f)
         ft = f
 
     # Evaluate the integral
 
     if use_fft:
         if return_freqs:
-            gamma  = (upper_eval - lower_eval)/m
+            m      = len(f)
+            gamma  = (upper_eval - lower_eval)/float(m)
             freqs  = np.linspace(lower_eval, upper_eval - gamma, num = m)
             return fourierin_1d_fft(ft, lower_int, upper_int, lower_eval, upper_eval, r, s, midpoint = midpoint), freqs
         else:

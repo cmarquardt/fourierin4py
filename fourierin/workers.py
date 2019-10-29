@@ -31,7 +31,8 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
     d : float
         Upper limit of evaluation for w
     r : float
-        Factor for adjusting the constant factor of the FFT: 0 for 1/\sqrt(pi), 1 for no factor.
+        Factor for adjusting the constant factor of the FFT: 0 for 1/\sqrt(pi),
+        1 for no factor.
     s : float
         Factor for adjusting frequency: -1 or -2 pi for forward FFT, 1 or 2 pi for inverse FFT.
     midpoint : bool
@@ -70,13 +71,13 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
     t = a + beta * jdx  ;  w = c + gamma * jdx
 
     y     = np.zeros(2*m, dtype = complex)
-    y[:m] = f * np.exp(1j * jdx * (beta*c + delta*jdx))
+    y[:m] = f * np.exp(1.j * jdx * (beta*c + delta*jdx))
 
     jdx   = np.arange(0., float(2*m), 1.)
 
     z     = np.empty(2*m, dtype = complex)
-    z[:m] = np.exp(- 1j * delta * jdx[:m]**2)
-    z[m:] = np.exp(- 1j * delta * (jdx[m:] - 2.*float(m))**2)
+    z[:m] = np.exp(- 1.j * delta * jdx[:m]**2)
+    z[m:] = np.exp(- 1.j * delta * (jdx[m:] - 2.*float(m))**2)
 
     # Convolution and inverse FFT - eq. (4.8)
 
@@ -84,7 +85,7 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
 
     # Return result - rest eq. (4.8)
 
-    return np.sqrt(np.abs(s) / (2.*np.pi)**(1-r)) * beta * np.exp(1j * (a*w + delta*jdx[:m]**2)) * tmp[:m]
+    return np.sqrt(np.abs(s) / (2.*np.pi)**(1.-r)) * beta * np.exp(1.j * (a*w + delta*jdx[:m]**2)) * tmp[:m]
 
 
 # 1d complex Fourier integral, non-regular spacing
