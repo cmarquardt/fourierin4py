@@ -11,12 +11,12 @@ import numpy as np
 # 1d Fourier integral (FFT)
 # -------------------------
 
-def fourierin_1d_fft(f, a, b, c, d, r, s):
+def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
 
-    """Evaluate a 1d Fourier integral with regular spacing.
+    """Evaluate a 1d Fourier integral from function values at a regular spacing.
 
-    The method implements Bailey & Swarztrauber (1993), based on Inverarity (2002),
-    for the 1d case.
+    The method implements the algorithm of Inverarity (2002), which is based on
+    Bailey & Swarztrauber (1993), for the 1d case.
 
     Arguments
     ---------
@@ -34,6 +34,8 @@ def fourierin_1d_fft(f, a, b, c, d, r, s):
         Factor for adjusting the constant factor of the FFT: 0 for 1/\sqrt(pi), 1 for no factor.
     s : float
         Factor for adjusting frequency: -1 or -2 pi for forward FFT, 1 or 2 pi for inverse FFT.
+    midpoint : bool
+        If True, function values are located on interval midpoints (default: False).
 
     Returns
     -------
@@ -44,6 +46,9 @@ def fourierin_1d_fft(f, a, b, c, d, r, s):
     -----
     Notation/variable names are based on the notation in Inverarity (2002).
 
+    References
+    ----------
+
     """
 
     # Eqn. (4.2) for the handling of s
@@ -53,6 +58,13 @@ def fourierin_1d_fft(f, a, b, c, d, r, s):
     # Eqns. (4.5) and (2.6)
 
     m = f.size  ;  beta = (b - a) / float(m)  ;  gamma = (d - c) / float(m)  ;  delta = 0.5*beta*gamma
+
+    # Midpoints
+
+    if midpoint:
+        a += 0.5*beta  ;  b += 0.5*beta
+
+    # Support arrays
 
     jdx = np.arange(0., float(m), 1.)
     t = a + beta * jdx  ;  w = c + gamma * jdx
@@ -80,7 +92,7 @@ def fourierin_1d_fft(f, a, b, c, d, r, s):
 
 def fourierin_1d_dft(f, a, b, w, r, s):
 
-    """Evaluate a 1d Fourier integral using a DFT (for non-regular frequency spacing).
+    """Evaluate a 1d Fourier integral using a DFT (for non-regular frequencies).
 
     The method implements a brute force evaluation of a Fourier integral for the 1d case.
     It may be useful if integral values are required for a small number of frequencies

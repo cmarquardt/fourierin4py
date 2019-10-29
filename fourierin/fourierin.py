@@ -13,8 +13,8 @@ from .workers import fourierin_1d_fft, fourierin_1d_dft
 # -------------------
 
 def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
-                 const_adj = 1., freq_adj = -1., resolution = None,
-                 omegas = None, use_fft = True):
+                 r = 1., s = -1., m = None, freqs = None,
+                 midpoint = False, return_freqs = False, use_fft = True):
 
     """Evaluate a 1d Fourier integral with a complex integrand and regular spacing.
 
@@ -33,16 +33,24 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
         Lower limit of evaluation for w
     upper_eval : float
         Upper limit of evaluation for w
-    const_adj : float
+    r : float
         Factor for adjusting the constant factor of the FFT: 1 for no factor, -1 for 1/\sqrt(pi).
-    freq_adj : float
+    s : float
         Factor for adjusting frequency: -1 or -2 pi for forward FFT, 1 or 2 pi for inverse FFT.
-    resolution : int
+    m : int
         Number of values.
+    freqs : float[:]
+        Output frequencies; if given, a slow DFT algorithm will be used (default: None)
+    midpoint : bool
+        If True, function values are located on interval midpoints (default: False).
+    return_freqs : bool
+        If True, return frequencies (default: False).
+    use_fft : bool
+        If False, use a slow DFT rather then the FFT for the evaluation of the integral (default: True).
 
     Returns
     -------
-    complex[:] or real[:]
+    complex[:]
         Fourier integral values for frequencies c <= w < d
 
     Notes
@@ -51,42 +59,37 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
 
     """
 
-    # TODO: support f as a function as in the R code
+    m = len(f)
 
-    resolution = len(f)
+    # FFT or brute-force DFT?
 
-    # Frequencies and their increment
-
-    if omegas is None:
+    if freqs is None:
         if lower_eval is None or upper_eval is None:
-            raise ValueError("Unless omegas are provided, lower and upper evaluation bounds must be specified.")
-
-        gamma  = (upper_eval - lower_eval)/resolution
-        omegas = np.linspace(lower_eval, upper_eval - gamma, num = resolution)
+            raise ValueError("Unless freqs are provided, lower and upper evaluation bounds must be specified.")
     else:
         use_fft = False
 
-    # Function evaluation (not yet implemented)
+    # Is f a function?
 
-    ### If f is the function, it needs to be evaluated in
-    ### the time domain values.
-    #if (is.function(f)) {
-
-    #    del <- (b - a)/resol # Increment in the time domain.
-    #    t <- seq(a + del/2, b - del/2,
-    #             length.out = resol)    # Freq. dom. vector.
-    #    f_t <- f(t)                     # Function values
-    #    ## Rutinary check
-    #    if(is.null(f_t)) stop("Function f is null.")
-    #} else {
-    #    f_t <- f
-    #}
-
-    f_t = f
+    if callable(f):
+        if m is None:
+            raise ValueError("If a function is given as input, the number of points to evaluate must be given.")
+        beta = (upper_int - lower_int) / float(m)
+        t    = np.linspace(lower_int + 0.5*beta, upper_int - 0.5*beta, num = m) # includes endpoint
+        ft   = f(t)
+        midpoint = True
+    else:
+        m  = len(f)
+        ft = f
 
     # Evaluate the integral
 
-    if not use_fft:
-        return fourierin_1d_nonregular(f_t, lower_int, upper_int, lower_eval, upper_eval, const_adj, freq_adj)
+    if use_fft:
+        if return_freqs:
+            gamma  = (upper_eval - lower_eval)/m
+            freqs  = np.linspace(lower_eval, upper_eval - gamma, num = m)
+            return fourierin_1d_fft(ft, lower_int, upper_int, lower_eval, upper_eval, r, s, midpoint = midpoint), freqs
+        else:
+            return fourierin_1d_fft(ft, lower_int, upper_int, lower_eval, upper_eval, r, s, midpoint = midpoint)
     else:
-        return fourierin_1d(f_t, lower_int, upper_int, lower_eval, upper_eval, const_adj, freq_adj)
+        return fourierin_1d_dft(ft, lower_int, upper_int, freqs, r, s)
