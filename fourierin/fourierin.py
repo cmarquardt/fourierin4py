@@ -18,7 +18,7 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
 
     """Evaluate a 1d Fourier integral with a complex integrand and regular spacing.
 
-    The method implements Bailey & Swarztrauber (1993), based on Inverarity (2002),
+    The method implements Bailey and Swarztrauber (1993), based on Inverarity (2002),
     for the 1d case.
 
     Arguments
@@ -34,9 +34,10 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
     upper_eval : float
         Upper limit of evaluation for w
     r : float
-        Factor for adjusting the constant factor of the FFT: 1 for no factor, -1 for 1/\sqrt(pi).
+        Factor for adjusting the constant factor of the FFT: 1 for no factor, -1 for $1/\sqrt{\pi}$.
     s : float
-        Factor for adjusting frequency: -1 or -2 pi for forward FFT, 1 or 2 pi for inverse FFT.
+        Factor for adjusting frequency: -1 or $-2 \pi$ for the forward FFT, 1 or $2 \pi$ for
+        the inverse FFT.
     m : int
         Number of values.
     freqs : float[:]
@@ -50,12 +51,20 @@ def fourierin_1d(f, lower_int, upper_int, lower_eval = None, upper_eval = None,
 
     Returns
     -------
-    complex[:]
-        Fourier integral values for frequencies c <= w < d
+    integral : complex[:]
+        Fourier integral values for frequencies $c <= w < d$.
 
     Notes
     -----
     Notation/variable names are based on the notation in Inverarity (2002).
+
+    References
+    ----------
+    Bailey, David H., and Paul N. Swarztrauber, 1994: A Fast Method for the Numerical Evaluation
+       of Continuous Fourier and Laplace Transforms. SIAM Journal on Scientific Computing 15: 1105-1110.
+
+    Inverarity, Gordon W., 2002: Fast Computation of Multidimensional Fourier Integrals. SIAM
+       Journal on Scientific Computing, 24, pp. 645-651.
 
     """
 

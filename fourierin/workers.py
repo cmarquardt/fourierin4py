@@ -16,7 +16,7 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
     """Evaluate a 1d Fourier integral from function values at a regular spacing.
 
     The method implements the algorithm of Inverarity (2002), which is based on
-    Bailey & Swarztrauber (1993), for the 1d case.
+    Bailey and Swarztrauber (1993), for the 1d case.
 
     Arguments
     ---------
@@ -31,17 +31,18 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
     d : float
         Upper limit of evaluation for w
     r : float
-        Factor for adjusting the constant factor of the FFT: 0 for 1/\sqrt(pi),
+        Factor for adjusting the constant factor of the FFT: 0 for $1/\sqrt{\pi}$,
         1 for no factor.
     s : float
-        Factor for adjusting frequency: -1 or -2 pi for forward FFT, 1 or 2 pi for inverse FFT.
+        Factor for adjusting frequency: -1 or $- 2 \pi$ for the forward FFT, 1 or
+        $2 \pi$ for the inverse FFT.
     midpoint : bool
         If True, function values are located on interval midpoints (default: False).
 
     Returns
     -------
-    complex[:]
-        Fourier integral values for frequencies c <= w < d.
+    integral : complex[:]
+        Fourier integral values for frequencies $c <= w < d$.
 
     Notes
     -----
@@ -49,6 +50,11 @@ def fourierin_1d_fft(f, a, b, c, d, r, s, midpoint = False):
 
     References
     ----------
+    Bailey, David H., and Paul N. Swarztrauber, 1994: A Fast Method for the Numerical Evaluation
+       of Continuous Fourier and Laplace Transforms. SIAM Journal on Scientific Computing 15: 1105-1110.
+
+    Inverarity, Gordon W., 2002: Fast Computation of Multidimensional Fourier Integrals. SIAM
+       Journal on Scientific Computing, 24, pp. 645-651.
 
     """
 
